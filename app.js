@@ -3,6 +3,12 @@ import morgan from "morgan";
 import helmet from "helmet";
 import compression from "compression";
 
+import { checkOverload } from "./helpers/check.conection.js";
+
+// init db
+import "./db/init.mongo.js";
+// checkOverload();
+
 const app = express();
 // init middleware
 app.use(morgan("dev")); /* LOG: GET / 200 2.100 ms - 12 */
