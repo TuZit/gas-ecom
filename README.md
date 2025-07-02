@@ -1,0 +1,4 @@
+- morgan: logger request
+- curl http://localhost:3005 --include: gửi 1 request tới URL và xem header lẫn body
+- helmet: che giấu 1 vài thông tin server
+- compression: nén lại reponse data

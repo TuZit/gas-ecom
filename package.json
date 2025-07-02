@@ -1,0 +1,29 @@
+{
+  "name": "gas-ecom",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/TuZit/gas-ecom#readme",
+  "bugs": {
+    "url": "https://github.com/TuZit/gas-ecom/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/TuZit/gas-ecom.git"
+  },
+  "license": "ISC",
+  "author": "tuzitt",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "compression": "^1.8.0",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.0"
+  }
+}
