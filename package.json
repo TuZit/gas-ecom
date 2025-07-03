@@ -19,8 +19,12 @@
     "dev": "node --watch server.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "compression": "^1.8.0",
+    "crypto": "^1.0.1",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
     "mongoose": "^8.16.1"
   },
   "devDependencies": {
