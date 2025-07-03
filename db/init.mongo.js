@@ -2,7 +2,8 @@ import mongoose from "mongoose";
 
 // Thay thế bằng connection string của bạn.
 // Nên được lưu trong file config hoặc biến môi trường.
-const connectString = "mongodb://localhost:27017/gas-ecom-dev";
+const connectString =
+  "mongodb+srv://papadracula141:P3CqV6pLBiM6wqBQ@cluster0.xtjkdg9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 class Database {
   constructor() {

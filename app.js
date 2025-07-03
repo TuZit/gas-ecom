@@ -7,6 +7,7 @@ import { checkOverload } from "./helpers/check.conection.js";
 
 // init db
 import "./db/init.mongo.js";
+import router from "./routers/index.js";
 // checkOverload();
 
 const app = express();
@@ -22,6 +23,13 @@ app.use(helmet());
 
 // nén data response
 app.use(compression());
+
+// middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// routers
+app.use(router);
 
 app.get("/", (_, res) => {
   res.status(200).json({
