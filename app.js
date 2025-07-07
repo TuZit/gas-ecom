@@ -3,11 +3,9 @@ import morgan from "morgan";
 import helmet from "helmet";
 import compression from "compression";
 
-import { checkOverload } from "./helpers/check.conection.js";
-
 // init db
-import "./db/init.mongo.js";
-import router from "./routers/index.js";
+import "./src/db/init.mongo.js";
+import router from "./src/routers/index.js";
 // checkOverload();
 
 const app = express();
@@ -30,5 +28,23 @@ app.use(express.urlencoded({ extended: true }));
 
 // routers
 app.use(router);
+
+// handling errors
+app.use((req, res, next) => {
+  const error = new Error("Not Found");
+  error.status = 404;
+  next(error);
+});
+
+app.use((error, req, res, next) => {
+  const statusCode = error.status || 500;
+  const message = error.message || "Internal Server Error";
+
+  return res.status(statusCode).json({
+    status: "error",
+    code: statusCode,
+    message,
+  });
+});
 
 export default app;

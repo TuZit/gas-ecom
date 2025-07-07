@@ -2,8 +2,8 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 
 import shopModel from "../models/shop.model.js";
-import { createTokenPair } from "../utils/authUtil.js";
-import { getInfoData } from "../utils/object.js";
+import { createTokenPair } from "../core/utils/authUtil.js";
+import { getInfoData } from "../core/utils/object.js";
 import KeyTokenService from "./keyToken.service.js";
 
 class accessServices {
