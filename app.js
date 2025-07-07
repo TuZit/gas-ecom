@@ -31,11 +31,4 @@ app.use(express.urlencoded({ extended: true }));
 // routers
 app.use(router);
 
-app.get("/", (_, res) => {
-  res.status(200).json({
-    message: "Hello World",
-    // data: "Shibaa".repeat(1000000),
-  });
-});
-
 export default app;
