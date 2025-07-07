@@ -4,7 +4,7 @@ import helmet from "helmet";
 import compression from "compression";
 
 // init db
-import "./src/db/init.mongo.js";
+import "./src/core/db/init.mongo.js";
 import router from "./src/routers/index.js";
 // checkOverload();
 
@@ -36,10 +36,9 @@ app.use((req, res, next) => {
   next(error);
 });
 
-app.use((error, req, res, next) => {
-  const statusCode = error.status || 500;
-  const message = error.message || "Internal Server Error";
-
+app.use((err, req, res, next) => {
+  const statusCode = err.status || 500;
+  const message = err.message || "Internal Server Error";
   return res.status(statusCode).json({
     status: "error",
     code: statusCode,
