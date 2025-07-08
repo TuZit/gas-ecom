@@ -1,13 +1,15 @@
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import nodeCrypto from "node:crypto";
 
 import shopModel from "../models/shop.model.js";
 import { createTokenPair } from "../core/utils/authUtil.js";
 import { getInfoData } from "../core/utils/object.js";
 import KeyTokenService from "./keyToken.service.js";
 import { BadRequestError } from "../core/response-handler/error.response.js";
+import { findShopByEmail } from "./shop.services.js";
 
-class accessServices {
+class AccessServices {
   static async signUp({ name, email, password }) {
     const shopHolder = await shopModel.findOne({ email: email }).lean();
     if (shopHolder) {
@@ -38,7 +40,7 @@ class accessServices {
 
       const publicKeyString = await KeyTokenService.createKeyToken({
         userId: newShop._id,
-        publickey: publicKey,
+        publicKey: publicKey,
       });
 
       const token = await createTokenPair(
@@ -60,9 +62,53 @@ class accessServices {
       };
     }
   }
+
+  static async login({ email, password, refreshToken }) {
+    const foundShop = await findShopByEmail({ email });
+    if (!foundShop) {
+      throw new BadRequestError("Error: Shop not found");
+    }
+
+    const matchPass = await bcrypt.compare(password, foundShop.password);
+    if (!matchPass) {
+      throw new BadRequestError("Error: Invalid password");
+    }
+
+    const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
+      modulusLength: 4096,
+      publicKeyEncoding: {
+        type: "pkcs1",
+        format: "pem",
+      },
+      privateKeyEncoding: {
+        type: "pkcs1",
+        format: "pem",
+      },
+    });
+
+    const tokens = await createTokenPair(
+      { id: foundShop._id, email },
+      publicKey,
+      privateKey
+    );
+    await KeyTokenService.createKeyToken({
+      userId: foundShop._id,
+      publickey: publicKey,
+      privateKey,
+      refreshToken: tokens.refreshToken,
+    });
+
+    return {
+      tokens,
+      shop: getInfoData({
+        fields: ["name", "email", "_id"],
+        object: foundShop,
+      }),
+    };
+  }
 }
 
-export default accessServices;
+export default AccessServices;
 
 export const ShopRoles = {
   SHOP: "SHOP",

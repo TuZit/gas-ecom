@@ -10,14 +10,14 @@ export const apiKey = async (req, res, next) => {
     const key = req.headers[HEADER.API_KEY]?.toString();
     if (!key) {
       return res.status(403).json({
-        message: "Forbidden Error",
+        message: "API Key: Forbidden Error",
       });
     }
 
     const objKey = await findById(key);
     if (!objKey) {
       return res.status(403).json({
-        message: "Forbidden Error",
+        message: "Obj Key: Forbidden Error",
       });
     }
     req.objKey = objKey;
@@ -38,7 +38,7 @@ export const checkPermission = (permission) => {
     const validPermission = req.objKey.permissions.includes(permission);
     if (!validPermission) {
       return res.status(403).json({
-        message: "Forbidden Error",
+        message: "Check Permission: Forbidden Error",
       });
     }
     return next();

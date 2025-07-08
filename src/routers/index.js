@@ -12,5 +12,6 @@ router.use(checkPermission("0000"));
 
 // routers
 router.post("/api/sign-up", asyncHandler(accessController.signUp));
+router.post("/api/login", asyncHandler(accessController.login));
 
 export default router;

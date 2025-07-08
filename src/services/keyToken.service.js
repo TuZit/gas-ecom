@@ -1,16 +1,38 @@
 import keytokenModel from "../models/keyToken.model.js";
 
 class KeyTokenService {
-  static createKeyToken = async ({ userId, publickey, privateKey }) => {
+  static createKeyToken = async ({
+    userId,
+    publicKey,
+    privateKey,
+    refreshToken,
+  }) => {
     try {
-      const publickKeyString = publickey.toString();
-      const tokens = await keytokenModel.create({
-        user: userId,
-        publicKey: publickKeyString,
-        // privateKey,
-      });
+      // const publickKeyString = publickey.toString();
+      // const tokens = await keytokenModel.create({
+      //   user: userId,
+      //   publicKey: publickKeyString,
+      //   privateKey,
+      // });
 
-      return tokens ? publickKeyString : null;
+      const filters = {
+        user: userId,
+      };
+      const update = {
+        publicKey,
+        privateKey,
+        refreshTokensUsed: [],
+        refreshToken,
+      };
+      const options = { upsert: true, new: true };
+
+      const tokens = await keytokenModel.findOneAndUpdate(
+        filters,
+        update,
+        options
+      );
+
+      return tokens ? tokens.publicKey : null;
     } catch (error) {
       console.log(error);
       return error;

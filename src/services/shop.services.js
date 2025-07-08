@@ -1,47 +1,38 @@
 import bcrypt from "bcrypt";
-import crypto from "crypto";
+import shopModel from "../models/shop.model.js";
 
-import shopModel from "../../models/shop.model.js";
+class ShopServices {}
 
-class shopServices {
-  static async signUp({ name, email, password }) {
-    try {
-      const shopHolder = shopModel.findOne({ email: email }).lean();
-      if (shopHolder) {
-        return {
-          code: "xxx",
-          message: "Shop already existed",
-          status: "error",
-        };
-      }
+export const findShopByEmail = async ({
+  email,
+  select = {
+    email: 1,
+    password: 1,
+    name: 1,
+    status: 1,
+    roles: [1],
+  },
+}) => {
+  return await shopModel.findOne({ email: email }).select(select).lean();
+};
 
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      const newShop = shopModel.create({
-        name,
-        email,
-        password: hashedPassword,
-        role: [ShopRoles.SHOP],
-      });
-
-      if (newShop) {
-        const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
-          modulusLength: 4096,
-        });
-        console.log({ privateKey, publicKey });
-      }
-    } catch (error) {
-      console.log(error);
-      return {
-        code: "xxx",
-        message: "Error",
-        status: "error",
-      };
-    }
+export const createShop = async ({ name, email, password }) => {
+  const shopHolder = await shopModel.findOne({ email: email }).lean();
+  if (shopHolder) {
+    throw new BadRequestError("Error: Shop already existed");
   }
-}
 
-export default shopServices;
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const newShop = await shopModel.create({
+    name,
+    email,
+    password: hashedPassword,
+    role: [ShopRoles.SHOP],
+  });
+};
+
+export default ShopServices;
 
 export const ShopRoles = {
   SHOP: "SHOP",
