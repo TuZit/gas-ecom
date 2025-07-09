@@ -1,9 +1,5 @@
 import { findById } from "../services/apiKey.service.js";
-
-const HEADER = {
-  API_KEY: "x-api-key",
-  AUTHORIZATION: "authorization",
-};
+import { HEADER } from "../core/constants/index.js";
 
 export const apiKey = async (req, res, next) => {
   try {
@@ -42,11 +38,5 @@ export const checkPermission = (permission) => {
       });
     }
     return next();
-  };
-};
-
-export const asyncHandler = (fn) => {
-  return (req, res, next) => {
-    fn(req, res, next).catch(next);
   };
 };

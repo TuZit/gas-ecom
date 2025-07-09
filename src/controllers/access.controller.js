@@ -1,4 +1,4 @@
-import { CREATED } from "../core/response-handler/success.response.js";
+import { CREATED, OK } from "../core/response-handler/success.response.js";
 import AccessServices from "../services/access.service.js";
 
 class AccessController {
@@ -11,9 +11,16 @@ class AccessController {
   };
 
   login = async (req, res, next) => {
-    new CREATED({
-      message: "Login OK!",
+    new OK({
+      message: "Login successfully!",
       metadata: await AccessServices.login(req.body),
+    }).send(res);
+  };
+
+  logout = async (req, res, next) => {
+    new OK({
+      message: "Logout successfully!",
+      metadata: await AccessServices.logout({ keyStore: req.keyStore }),
     }).send(res);
   };
 }

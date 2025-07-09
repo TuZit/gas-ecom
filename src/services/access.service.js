@@ -73,7 +73,7 @@ class AccessServices {
     if (!matchPass) {
       throw new BadRequestError("Error: Invalid password");
     }
-
+    // Tạo key pair
     const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
       modulusLength: 4096,
       publicKeyEncoding: {
@@ -86,14 +86,16 @@ class AccessServices {
       },
     });
 
+    // Gen token
     const tokens = await createTokenPair(
       { id: foundShop._id, email },
       publicKey,
       privateKey
     );
+    // Lưu resfreshToken, publicKey vào DB cho 1 sesstion login
     await KeyTokenService.createKeyToken({
       userId: foundShop._id,
-      publickey: publicKey,
+      publicKey,
       privateKey,
       refreshToken: tokens.refreshToken,
     });
@@ -106,6 +108,11 @@ class AccessServices {
       }),
     };
   }
+
+  static logout = async ({ keyStore }) => {
+    const delKey = await KeyTokenService.removeKeyById(keyStore._id);
+    return delKey;
+  };
 }
 
 export default AccessServices;

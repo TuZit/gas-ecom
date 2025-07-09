@@ -1,4 +1,11 @@
 import JWT from "jsonwebtoken";
+import { asyncHandler } from "../../helpers/asyncHandller.js";
+import KeyTokenService from "../../services/keyToken.service.js";
+import { HEADER } from "../constants/index.js";
+import {
+  AuthFailureError,
+  NotFoundError,
+} from "../response-handler/error.response.js";
 
 export const createTokenPair = async (payload, publicKey, privateKey) => {
   try {
@@ -24,3 +31,32 @@ export const createTokenPair = async (payload, publicKey, privateKey) => {
     console.error(error);
   }
 };
+
+export const authentication = asyncHandler(async (req, res, next) => {
+  /* 
+  1. Check userID
+  2. get access token
+  3. verify token
+  4. check user
+  5. check keyStore with this userID
+  6. OK all -> return next()
+*/
+  const userId = req.headers[HEADER.CLIENT_ID];
+  if (!userId) throw new AuthFailureError("User ID is required");
+
+  const keyStore = await KeyTokenService.findByUserId(userId);
+  if (!keyStore) throw new NotFoundError("Nout found keyStore");
+
+  const accessToken = req.headers[HEADER.AUTHORIZATION];
+  if (!accessToken) throw new AuthFailureError("Invalid Access Token");
+
+  try {
+    const decodeUser = JWT.verify(accessToken, keyStore.publicKey);
+    if (userId !== decodeUser.id) throw new AuthFailureError("Invalid User ID");
+
+    req.keyStore = keyStore;
+    return next();
+  } catch (error) {
+    throw error;
+  }
+});

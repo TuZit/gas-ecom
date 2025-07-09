@@ -1,3 +1,5 @@
+import { ReasonPhrases, StatusCodes } from "../constants/httpStatusCode.js";
+
 class ErrorReponse extends Error {
   constructor(message, status) {
     super(message);
@@ -7,8 +9,8 @@ class ErrorReponse extends Error {
 
 class ConflictRequestError extends ErrorReponse {
   constructor(
-    message = ReponseStatusCode.CONFLICT,
-    statusCode = StatusCode.CONFLICT
+    message = ReasonPhrases.CONFLICT,
+    statusCode = StatusCodes.CONFLICT
   ) {
     super(message, statusCode);
   }
@@ -16,29 +18,35 @@ class ConflictRequestError extends ErrorReponse {
 
 class BadRequestError extends ErrorReponse {
   constructor(
-    message = ReponseStatusCode.FORBIDDEN,
-    statusCode = StatusCode.FORBIDDEN
+    message = ReasonPhrases.FORBIDDEN,
+    statusCode = StatusCodes.FORBIDDEN
   ) {
     super(message, statusCode);
   }
 }
 
-const StatusCode = {
-  FORBIDDEN: 403,
-  NOT_FOUND: 404,
-  CONFLICT: 409,
-};
+class AuthFailureError extends ErrorReponse {
+  constructor(
+    message = ReasonPhrases.UNAUTHORIZED,
+    statusCode = StatusCodes.UNAUTHORIZED
+  ) {
+    super(message, statusCode);
+  }
+}
 
-const ReponseStatusCode = {
-  FORBIDDEN: "Bad Request error",
-  NOT_FOUND: "Not Found error",
-  CONFLICT: "Conflict error",
-};
+class NotFoundError extends ErrorReponse {
+  constructor(
+    message = ReasonPhrases.NOT_FOUND,
+    statusCode = StatusCodes.NOT_FOUND
+  ) {
+    super(message, statusCode);
+  }
+}
 
 export {
   ErrorReponse,
   ConflictRequestError,
   BadRequestError,
-  StatusCode,
-  ReponseStatusCode,
+  AuthFailureError,
+  NotFoundError,
 };
