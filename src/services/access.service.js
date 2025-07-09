@@ -167,6 +167,44 @@ class AccessServices {
       tokens,
     };
   };
+
+  static handleRefreshTokenV2 = async ({ keyStore, user, refreshToken }) => {
+    const { id, email } = user;
+
+    if (keyStore.refreshTokensUsed.includes(refreshToken)) {
+      await KeyTokenService.deleteKeyById(id);
+      // Token is used
+      throw new ForbiddenError("Something went wrong. Please login again!");
+    }
+
+    // check user
+    const foundShop = await findShopByEmail({ email });
+    if (!foundShop) throw new AuthFailureError("Shop is not register");
+
+    const tokens = await createTokenPair(
+      {
+        userId: id,
+        email: email,
+      },
+      keyStore.publicKey,
+      keyStore.privateKey
+    );
+
+    // update token
+    await keyStore.updateOne({
+      $set: {
+        refreshToken: tokens.refreshToken,
+      },
+      $addToSet: {
+        refreshTokensUsed: refreshToken, // đã đc sử dụng để lấy token mới rồi
+      },
+    });
+
+    return {
+      user,
+      tokens,
+    };
+  };
 }
 
 export default AccessServices;

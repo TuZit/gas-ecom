@@ -56,6 +56,7 @@ export const authentication = asyncHandler(async (req, res, next) => {
     if (userId !== decodeUser.id) throw new AuthFailureError("Invalid User ID");
 
     req.keyStore = keyStore;
+    req.user = { id: userId, email: decodeUser.email };
     return next();
   } catch (error) {
     throw error;

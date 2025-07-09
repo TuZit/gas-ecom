@@ -26,6 +26,11 @@ const productSchema = new Schema(
 
 const clothingSchema = new Schema(
   {
+    product_shop: {
+      type: Schema.Types.ObjectId,
+      ref: "Shop",
+      required: true,
+    },
     brand: {
       type: String,
       required: true,
@@ -45,6 +50,11 @@ const clothingSchema = new Schema(
 
 const electronicSchema = new Schema(
   {
+    product_shop: {
+      type: Schema.Types.ObjectId,
+      ref: "Shop",
+      required: true,
+    },
     manufactory: {
       type: String,
       required: true,

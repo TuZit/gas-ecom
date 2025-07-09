@@ -3,12 +3,11 @@ import ProductFactoryServices from "../services/product.service.js";
 
 class ProductController {
   async createProduct(req, res, next) {
-    const { type, payload } = req.body;
     new OK({
       message: "Create product successfully!",
       metadata: await ProductFactoryServices.createProduct(
         req.body.product_type,
-        req.body
+        { ...req.body, product_shop: req.user.id }
       ),
     }).send(res);
   }
