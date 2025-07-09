@@ -1,5 +1,5 @@
 import JWT from "jsonwebtoken";
-import { asyncHandler } from "../../helpers/asyncHandller.js";
+import { asyncHandler } from "../../helpers/asyncHandler.js";
 import KeyTokenService from "../../services/keyToken.service.js";
 import { HEADER } from "../constants/index.js";
 import {
