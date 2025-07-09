@@ -2,7 +2,7 @@ import express from "express";
 import accessController from "../controllers/access.controller.js";
 import { apiKey, checkPermission } from "../auth/checkAuth.js";
 import { asyncHandler } from "../helpers/asyncHandler.js";
-import { authentication } from "../core/utils/authUtil.js";
+import { authentication, authenticationV2 } from "../core/utils/authUtil.js";
 
 import productRouter from "./product/index.js";
 import accessRouter from "./access/index.js";
@@ -19,7 +19,7 @@ router.use(checkPermission("0000"));
 router.use(accessRouter);
 
 /*---------- authentication ----------*/
-router.use(authentication);
+router.use(authenticationV2);
 
 router.post("/api/logout", asyncHandler(accessController.logout));
 router.post(

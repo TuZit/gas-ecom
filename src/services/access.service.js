@@ -192,12 +192,8 @@ class AccessServices {
 
     // update token
     await keyStore.updateOne({
-      $set: {
-        refreshToken: tokens.refreshToken,
-      },
-      $addToSet: {
-        refreshTokensUsed: refreshToken, // đã đc sử dụng để lấy token mới rồi
-      },
+      $set: { refreshToken: tokens.refreshToken },
+      $addToSet: { refreshTokensUsed: refreshToken },
     });
 
     return {

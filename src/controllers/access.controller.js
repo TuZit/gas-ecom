@@ -25,9 +25,19 @@ class AccessController {
   };
 
   handleRefreshToken = async (req, res, next) => {
+    // new OK({
+    //   message: "Refresh token successfully!",
+    //   metadata: await AccessServices.handleRefreshToken(req.body.refreshToken),
+    // }).send(res);
+
+    // refactor: no need access token
     new OK({
       message: "Refresh token successfully!",
-      metadata: await AccessServices.handleRefreshToken(req.body.refreshToken),
+      metadata: await AccessServices.handleRefreshTokenV2({
+        refreshToken: req.body.refreshToken,
+        keyStore: req.keyStore,
+        user: req.user,
+      }),
     }).send(res);
   };
 }
