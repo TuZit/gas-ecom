@@ -3,10 +3,14 @@ import crypto from "crypto";
 import nodeCrypto from "node:crypto";
 
 import shopModel from "../models/shop.model.js";
-import { createTokenPair } from "../core/utils/authUtil.js";
+import { createTokenPair, verifyJWTToken } from "../core/utils/authUtil.js";
 import { getInfoData } from "../core/utils/object.js";
 import KeyTokenService from "./keyToken.service.js";
-import { BadRequestError } from "../core/response-handler/error.response.js";
+import {
+  AuthFailureError,
+  BadRequestError,
+  ForbiddenError,
+} from "../core/response-handler/error.response.js";
 import { findShopByEmail } from "./shop.services.js";
 
 class AccessServices {
@@ -112,6 +116,56 @@ class AccessServices {
   static logout = async ({ keyStore }) => {
     const delKey = await KeyTokenService.removeKeyById(keyStore._id);
     return delKey;
+  };
+
+  static handleRefreshToken = async (refreshToken) => {
+    // check token is used
+    const foundToken = await KeyTokenService.findRefreshTokenUsed(refreshToken);
+    if (foundToken) {
+      // decode để xác định user
+      const { id } = await verifyJWTToken(refreshToken, foundToken.publicKey);
+      // xoá tất cả token trong keyStore
+      await KeyTokenService.deleteKeyById(id);
+      // Token is used
+      throw new ForbiddenError("Something went wrong. Please login again!");
+    }
+
+    const holderToken = await KeyTokenService.findByRefreshToken(refreshToken);
+    if (!holderToken) throw new AuthFailureError("Shop is not register");
+
+    // verify token
+    const { id, email } = await verifyJWTToken(
+      refreshToken,
+      holderToken.publicKey
+    );
+    // check user
+    const foundShop = await findShopByEmail({ email });
+    if (!foundShop) throw new AuthFailureError("Shop is not register");
+
+    // create new keypair
+    const tokens = await createTokenPair(
+      {
+        userId: id,
+        email: email,
+      },
+      holderToken.publicKey,
+      holderToken.privateKey
+    );
+
+    // update token
+    await holderToken.updateOne({
+      $set: {
+        refreshToken: tokens.refreshToken,
+      },
+      $addToSet: {
+        refreshTokensUsed: refreshToken, // đã đc sử dụng để lấy token mới rồi
+      },
+    });
+
+    return {
+      user: { id, email },
+      tokens,
+    };
   };
 }
 

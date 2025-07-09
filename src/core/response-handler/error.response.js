@@ -34,6 +34,15 @@ class AuthFailureError extends ErrorReponse {
   }
 }
 
+class ForbiddenError extends ErrorReponse {
+  constructor(
+    message = ReasonPhrases.FORBIDDEN,
+    statusCode = StatusCodes.FORBIDDEN
+  ) {
+    super(message, statusCode);
+  }
+}
+
 class NotFoundError extends ErrorReponse {
   constructor(
     message = ReasonPhrases.NOT_FOUND,
@@ -49,4 +58,5 @@ export {
   BadRequestError,
   AuthFailureError,
   NotFoundError,
+  ForbiddenError,
 };

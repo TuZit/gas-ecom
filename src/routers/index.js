@@ -20,5 +20,9 @@ router.post("/api/login", asyncHandler(accessController.login));
 router.use(authentication);
 
 router.post("/api/logout", asyncHandler(accessController.logout));
+router.post(
+  "/api/refresh-token",
+  asyncHandler(accessController.handleRefreshToken)
+);
 
 export default router;
