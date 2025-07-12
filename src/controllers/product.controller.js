@@ -26,6 +26,46 @@ class ProductController {
       metadata: await ProductFactoryServices.getProducts(),
     }).send(res);
   }
+
+  async getAllDraftForShop(req, res, next) {
+    new OK({
+      message: "Get list draft products successfully!",
+      metadata: await ProductFactoryServices.findAllDraftForShop({
+        product_shop: req.user.id,
+      }),
+    }).send(res);
+  }
+
+  async getAllPublishedForShop(req, res, next) {
+    new OK({
+      message: "Get list published products successfully!",
+      metadata: await ProductFactoryServices.findAllPublishedForShop({
+        product_shop: req.user.id,
+      }),
+    }).send(res);
+  }
+
+  async getListSearchProduct(req, res, next) {
+    new OK({
+      message: "Get list products successfully!",
+      metadata: await ProductFactoryServices.searchProducts({
+        keySearch: req.params.keysearch,
+      }),
+    }).send(res);
+  }
+
+  async publishProductByShop(req, res, next) {
+    new OK({
+      message: `${
+        req.body.isPublished ? "Published" : "Un-Published"
+      } product successfully!`,
+      metadata: await ProductFactoryServices.publishProductByShop({
+        product_shop: req.user.id,
+        product_id: req.params.id,
+        isPublished: req.body.isPublished,
+      }),
+    }).send(res);
+  }
 }
 
 export default new ProductController();

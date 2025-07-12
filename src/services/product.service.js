@@ -4,6 +4,11 @@ import {
   clothingModel,
   electronicModel,
 } from "../models/product.model.js";
+import {
+  publishProductByShop,
+  queryProduct,
+  searchProductsByUser,
+} from "../models/repositories/product.repository.js";
 
 class ProductFactoryServices {
   static producRegistry = {};
@@ -16,15 +21,33 @@ class ProductFactoryServices {
     const productClass = ProductFactoryServices.producRegistry[type];
     if (!productClass) throw new BadRequestError("Invalid Product Type ", type);
     return new productClass(payload).createProduct();
-    // switch (type) {
-    //   case "Electronics":
-    //     return await new ElectronicProduct(payload).createProduct();
-    //   case "Clothings":
-    //     return await new ClothingProduct(payload).createProduct();
-    //   default:
-    //     throw new BadRequestError("Invalid product type");
-    // }
   }
+
+  // QUERY
+  static async findAllDraftForShop({ product_shop, limit = 50, skip = 0 }) {
+    const query = { product_shop, isDraft: true };
+    return await queryProduct({ query, limit, skip });
+  }
+
+  static async findAllPublishedForShop({ product_shop, limit = 50, skip = 0 }) {
+    const query = { product_shop, isPublished: true };
+    return await queryProduct({ query, limit, skip });
+  }
+
+  static async searchProducts({ keySearch }) {
+    return await searchProductsByUser({ keySearch });
+  }
+  // END QUERY
+
+  // PUT
+  static async publishProductByShop({ product_shop, product_id, isPublished }) {
+    return await publishProductByShop({
+      product_shop,
+      product_id,
+      isPublished,
+    });
+  }
+  // ENDPUT
 }
 
 class Product {
