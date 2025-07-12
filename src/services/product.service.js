@@ -6,18 +6,24 @@ import {
 } from "../models/product.model.js";
 
 class ProductFactoryServices {
-  // type: clothing/electronic
-  // payload
+  static producRegistry = {};
+
+  static registerProductTYpe(type, classRef) {
+    ProductFactoryServices.producRegistry[type] = classRef;
+  }
 
   static async createProduct(type, payload) {
-    switch (type) {
-      case "Electronics":
-        return await new ElectronicProduct(payload).createProduct();
-      case "Clothings":
-        return await new ClothingProduct(payload).createProduct();
-      default:
-        throw new BadRequestError("Invalid product type");
-    }
+    const productClass = ProductFactoryServices.producRegistry[type];
+    if (!productClass) throw new BadRequestError("Invalid Product Type ", type);
+    return new productClass(payload).createProduct();
+    // switch (type) {
+    //   case "Electronics":
+    //     return await new ElectronicProduct(payload).createProduct();
+    //   case "Clothings":
+    //     return await new ClothingProduct(payload).createProduct();
+    //   default:
+    //     throw new BadRequestError("Invalid product type");
+    // }
   }
 }
 
@@ -69,5 +75,9 @@ class ElectronicProduct extends Product {
     return await super.createProduct();
   }
 }
+
+// register product types
+ProductFactoryServices.registerProductTYpe("Electronics", ElectronicProduct);
+ProductFactoryServices.registerProductTYpe("Clothings", ClothingProduct);
 
 export default ProductFactoryServices;
