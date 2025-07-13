@@ -79,3 +79,14 @@ export const findAllProducts = async ({
 export const findProductByID = async ({ product_id, unSelect }) => {
   return productModel.findById(product_id).select(getUn_SelectData(unSelect));
 };
+
+export const updateProductById = async ({
+  product_id,
+  bodyUpdate,
+  model,
+  isNew = true,
+}) => {
+  return await model.findByIdAndUpdate(product_id, bodyUpdate, {
+    new: isNew,
+  });
+};

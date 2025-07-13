@@ -1,5 +1,9 @@
 import { BadRequestError } from "../core/response-handler/error.response.js";
 import {
+  removeEmptyProperty,
+  updateNestedObjectParser,
+} from "../core/utils/object.js";
+import {
   productModel,
   clothingModel,
   electronicModel,
@@ -10,6 +14,7 @@ import {
   searchProductsByUser,
   findAllProducts,
   findProductByID,
+  updateProductById,
 } from "../models/repositories/product.repository.js";
 
 class ProductFactoryServices {
@@ -23,6 +28,12 @@ class ProductFactoryServices {
     const productClass = ProductFactoryServices.producRegistry[type];
     if (!productClass) throw new BadRequestError("Invalid Product Type ", type);
     return new productClass(payload).createProduct();
+  }
+
+  static async updateProduct(type, payload) {
+    const productClass = ProductFactoryServices.producRegistry[type];
+    if (!productClass) throw new BadRequestError("Invalid Product Type ", type);
+    return new productClass(payload).updateProduct(payload.product_id);
   }
 
   // QUERY
@@ -98,6 +109,14 @@ class Product {
   async createProduct(product_id) {
     return await productModel.create({ ...this, _id: product_id });
   }
+
+  async updateProduct(product_id, bodyUpdate) {
+    return await updateProductById({
+      product_id,
+      bodyUpdate,
+      model: productModel,
+    });
+  }
 }
 
 class ClothingProduct extends Product {
@@ -108,6 +127,25 @@ class ClothingProduct extends Product {
     });
     if (!newClothing) throw new BadRequestError("Create new clothing failed");
     return await super.createProduct(newClothing._id);
+  }
+
+  async updateProduct(product_id) {
+    // 1. remove attributes has null or undefined
+    const objectParams = removeEmptyProperty(this);
+
+    // 2. check where to update?
+    if (objectParams.product_attributes) {
+      // update child collection (clothing)
+      await updateProductById({
+        product_id,
+        bodyUpdate: updateNestedObjectParser(objectParams.product_attributes),
+        model: clothingModel,
+      });
+    }
+    // 3. update parent collection (product)
+    const updatePayload = updateNestedObjectParser(objectParams);
+    const updatedProduct = await super.updateProduct(product_id, updatePayload);
+    return updatedProduct;
   }
 }
 
@@ -120,6 +158,25 @@ class ElectronicProduct extends Product {
     if (!newElectronic)
       throw new BadRequestError("Create new electronic failed");
     return await super.createProduct();
+  }
+
+  async updateProduct(product_id) {
+    // 1. remove attributes has null or undefined
+    const objectParams = removeEmptyProperty(this);
+
+    // 2. check where to update?
+    if (objectParams.product_attributes) {
+      // update child collection (electronic)
+      await updateProductById({
+        product_id,
+        bodyUpdate: updateNestedObjectParser(objectParams.product_attributes),
+        model: electronicModel,
+      });
+    }
+    // 3. update parent collection (product)
+    const updatePayload = updateNestedObjectParser(objectParams);
+    const updatedProduct = await super.updateProduct(product_id, updatePayload);
+    return updatedProduct;
   }
 }
 

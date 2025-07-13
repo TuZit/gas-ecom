@@ -22,8 +22,15 @@ class ProductController {
 
   async updateProduct(req, res, next) {
     new OK({
-      message: "Get products successfully!",
-      metadata: await ProductFactoryServices.getProducts(),
+      message: "Update product successfully!",
+      metadata: await ProductFactoryServices.updateProduct(
+        req.body.product_type,
+        {
+          ...req.body,
+          product_shop: req.user.id,
+          product_id: req.params.product_id,
+        }
+      ),
     }).send(res);
   }
 

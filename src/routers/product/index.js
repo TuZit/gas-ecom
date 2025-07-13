@@ -20,6 +20,10 @@ router.post(
 router.use(authenticationV2);
 
 router.post("/api/product", asyncHandler(ProductController.createProduct));
+router.patch(
+  "/api/product/:product_id",
+  asyncHandler(ProductController.updateProduct)
+);
 router.get("/api/product", asyncHandler(ProductController.getProducts));
 router.put("/api/product", asyncHandler(ProductController.updateProduct));
 
