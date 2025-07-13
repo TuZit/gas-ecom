@@ -4,6 +4,7 @@ import {
   electronicModel,
   productModel,
 } from "../../models/product.model.js";
+import { getSelectData, getUn_SelectData } from "../../core/utils/object.js";
 
 export const publishProductByShop = async ({
   product_shop,
@@ -53,4 +54,28 @@ export const searchProductsByUser = async ({ keySearch }) => {
     .lean();
 
   return result;
+};
+
+export const findAllProducts = async ({
+  limit,
+  sort,
+  page,
+  filter,
+  select,
+}) => {
+  const skip = (page - 1) * limit;
+  const sortBy = sort === "ctime" ? { _id: -1 } : { _id: 1 };
+  const products = productModel
+    .find(filter)
+    .sort(sortBy)
+    .skip(skip)
+    .limit(limit)
+    .select(getSelectData(select))
+    .lean();
+
+  return products;
+};
+
+export const findProductByID = async ({ product_id, unSelect }) => {
+  return productModel.findById(product_id).select(getUn_SelectData(unSelect));
 };

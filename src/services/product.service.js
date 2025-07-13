@@ -8,6 +8,8 @@ import {
   publishProductByShop,
   queryProduct,
   searchProductsByUser,
+  findAllProducts,
+  findProductByID,
 } from "../models/repositories/product.repository.js";
 
 class ProductFactoryServices {
@@ -36,6 +38,28 @@ class ProductFactoryServices {
 
   static async searchProducts({ keySearch }) {
     return await searchProductsByUser({ keySearch });
+  }
+
+  static async findAllProducts({
+    limit = 50,
+    sort = "ctime",
+    page = 1,
+    filter = { isPublished: true },
+  }) {
+    return await findAllProducts({
+      limit,
+      sort,
+      page,
+      filter,
+      select: ["product_name", "product_price", "product_thumb"],
+    });
+  }
+
+  static async findProductByID(product_id) {
+    return await findProductByID({
+      product_id,
+      unSelect: ["__v"],
+    });
   }
   // END QUERY
 

@@ -10,6 +10,11 @@ router.post(
   "/api/product/search/:keysearch",
   asyncHandler(ProductController.getListSearchProduct)
 );
+router.post("/api/products", asyncHandler(ProductController.findAllProducts));
+router.post(
+  "/api/product/:product_id",
+  asyncHandler(ProductController.findProductByID)
+);
 
 /*---------- authentication ----------*/
 router.use(authenticationV2);

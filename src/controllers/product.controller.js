@@ -66,6 +66,22 @@ class ProductController {
       }),
     }).send(res);
   }
+
+  async findAllProducts(req, res, next) {
+    new OK({
+      message: "Get list all products successfully",
+      metadata: await ProductFactoryServices.findAllProducts(req.body ?? {}),
+    }).send(res);
+  }
+
+  async findProductByID(req, res, next) {
+    new OK({
+      message: "Find product by ID successfully",
+      metadata: await ProductFactoryServices.findProductByID(
+        req.params.product_id
+      ),
+    }).send(res);
+  }
 }
 
 export default new ProductController();
