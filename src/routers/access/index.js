@@ -5,11 +5,8 @@ import { authenticationV2 } from "../../core/utils/authUtil.js";
 
 const router = express.Router();
 
-router.post("/api/sign-up", asyncHandler(accessController.signUp));
-router.post("/api/login", asyncHandler(accessController.login));
-
 /*---------- authentication ----------*/
-router.use(authenticationV2);
+// router.use(authenticationV2);
 
 router.post("/api/logout", asyncHandler(accessController.logout));
 router.post(

@@ -8,6 +8,7 @@ import {
   clothingModel,
   electronicModel,
 } from "../models/product.model.js";
+import { insertInventory } from "../models/repositories/inventory.repository.js";
 import {
   publishProductByShop,
   queryProduct,
@@ -107,7 +108,15 @@ class Product {
   }
 
   async createProduct(product_id) {
-    return await productModel.create({ ...this, _id: product_id });
+    const newProduct = await productModel.create({ ...this, _id: product_id });
+    if (newProduct) {
+      await insertInventory({
+        product_id: newProduct._id,
+        shop_id: newProduct.product_shop,
+        stock: this.product_quantity,
+      });
+    }
+    return newProduct;
   }
 
   async updateProduct(product_id, bodyUpdate) {
