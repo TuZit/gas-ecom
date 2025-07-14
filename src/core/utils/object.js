@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { Types } from "mongoose";
 
 export const getInfoData = ({ fields = [], object = {} }) => {
   return _.pick(object, fields);
@@ -49,3 +50,5 @@ export const updateNestedObjectParser = (obj) => {
   });
   return final;
 };
+
+export const convertObjectIdMongodb = (id) => new Types.ObjectId(id);

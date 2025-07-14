@@ -33,11 +33,11 @@ const discountSchema = new Schema(
       type: Date,
       required: true,
     },
-    discount_max_usage: {
+    discount_max_uses: {
       /** số lượng discount đc áp dụng */ type: Number,
       required: true,
     },
-    discount_usages: {
+    discount_uses_count: {
       /** số lượng discount đã sử dụng  */ type: Number,
       required: true,
     },
@@ -56,14 +56,13 @@ const discountSchema = new Schema(
       required: true,
     },
 
-    discount_min_shopId: {
-      type: Number,
+    discount_shopId: {
+      type: Schema.Types.ObjectId,
       required: true,
     },
-    discount_status: {
-      type: String,
-      default: "active",
-      enum: ["active", "inactive"],
+    discount_is_active: {
+      type: Boolean,
+      default: true,
     },
     discount_applies_to: {
       type: String,
