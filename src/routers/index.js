@@ -8,6 +8,7 @@ import accessRouter from "./access/index.js";
 import productRouter from "./product/index.js";
 import discountRouter from "./discount/index.js";
 import cartRouter from "./cart/index.js";
+import checkoutRouter from "./checkout/index.js";
 
 const router = express.Router();
 
@@ -22,6 +23,9 @@ router.use(checkPermission("0000"));
 
 /*---------- discount routers ----------*/
 router.use("/api/discount", discountRouter);
+
+/*---------- checkout routers ----------*/
+router.use("/api/checkout", checkoutRouter);
 
 /*---------- cart routers ----------*/
 router.use("/api/cart", cartRouter);

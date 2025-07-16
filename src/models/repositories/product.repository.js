@@ -4,7 +4,11 @@ import {
   electronicModel,
   productModel,
 } from "../../models/product.model.js";
-import { getSelectData, getUn_SelectData } from "../../core/utils/object.js";
+import {
+  convertObjectIdMongodb,
+  getSelectData,
+  getUn_SelectData,
+} from "../../core/utils/object.js";
 
 export const publishProductByShop = async ({
   product_shop,
@@ -80,6 +84,12 @@ export const findProductByID = async ({ product_id, unSelect }) => {
   return productModel.findById(product_id).select(getUn_SelectData(unSelect));
 };
 
+export const getProductByID = async (product_id) => {
+  return productModel
+    .findOne({ _id: convertObjectIdMongodb(product_id) })
+    .lean();
+};
+
 export const updateProductById = async ({
   product_id,
   bodyUpdate,
@@ -89,4 +99,19 @@ export const updateProductById = async ({
   return await model.findByIdAndUpdate(product_id, bodyUpdate, {
     new: isNew,
   });
+};
+
+export const checkProductByServer = async (products) => {
+  return await Promise.all(
+    products.map(async (prd) => {
+      const foundProduct = await getProductByID(prd.productId);
+      if (foundProduct) {
+        return {
+          price: foundProduct.product_price,
+          quantity: prd.quantity,
+          productId: prd.productId,
+        };
+      }
+    })
+  );
 };
