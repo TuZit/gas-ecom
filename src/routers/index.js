@@ -9,6 +9,7 @@ import productRouter from "./product/index.js";
 import discountRouter from "./discount/index.js";
 import cartRouter from "./cart/index.js";
 import checkoutRouter from "./checkout/index.js";
+import inventoryRouter from "./inventory/index.js";
 
 const router = express.Router();
 
@@ -21,11 +22,14 @@ router.post("/api/login", asyncHandler(accessController.login));
 /*---------- permission ----------*/
 router.use(checkPermission("0000"));
 
+/*---------- checkout routers ----------*/
+router.use("/api/checkout", checkoutRouter);
+
 /*---------- discount routers ----------*/
 router.use("/api/discount", discountRouter);
 
-/*---------- checkout routers ----------*/
-router.use("/api/checkout", checkoutRouter);
+/*---------- inventory routers ----------*/
+router.use("/api/inventory", inventoryRouter);
 
 /*---------- cart routers ----------*/
 router.use("/api/cart", cartRouter);
@@ -34,7 +38,6 @@ router.use("/api/cart", cartRouter);
 router.use(productRouter);
 
 /*---------- access routers ----------*/
-router.use(accessRouter);
 router.use(accessRouter);
 
 export default router;

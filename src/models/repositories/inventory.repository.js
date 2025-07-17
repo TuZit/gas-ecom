@@ -1,3 +1,4 @@
+import { convertObjectIdMongodb } from "../../core/utils/object.js";
 import inventoryModel from "../inventory.model.js";
 
 export const insertInventory = async ({
@@ -12,4 +13,26 @@ export const insertInventory = async ({
     inventory_stock: stock,
     inventory_location: location,
   });
+};
+
+export const reservationInventory = async ({ productId, cartId, quantity }) => {
+  const query = {
+    inventory_productId: convertObjectIdMongodb(productId),
+    inventory_stock: { $gte: quantity },
+  };
+
+  return await inventoryModel.findOneAndUpdate(
+    query,
+    {
+      $inc: { inventory_stock: -quantity },
+      $push: {
+        inventory_reservations: {
+          quantity,
+          cartId,
+          createAt: new Date(),
+        },
+      },
+    },
+    { upsert: true, new: true }
+  );
 };
