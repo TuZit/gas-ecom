@@ -3,6 +3,26 @@ import morgan from "morgan";
 import helmet from "helmet";
 import compression from "compression";
 
+import ProductTestRedisServicecond from "./src/test/product.test.js";
+import inventoryServicePromise from "./src/test/inventory.test.js";
+
+// Test pub-sub redis với cơ chế đồng bộ hóa chính xác
+// Chúng ta sử dụng một IIFE (Immediately Invoked Function Expression) bất đồng bộ
+// để đợi subscriber sẵn sàng trước khi publish.
+(async () => {
+  try {
+    console.log("Waiting for inventory subscriber to be ready...");
+    await inventoryServicePromise;
+    console.log("Inventory subscriber is ready.");
+
+    // Giờ thì subscriber đã sẵn sàng, chúng ta có thể publish một cách an toàn.
+    console.log("--- Running Pub/Sub Test ---");
+    await ProductTestRedisServicecond.purchaseProduct("product-1234", 10);
+  } catch (err) {
+    console.error("Failed to run pub/sub test:", err);
+  }
+})();
+
 // init db
 import "./src/core/db/init.mongo.js";
 import router from "./src/routers/index.js";
