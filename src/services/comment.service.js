@@ -1,6 +1,7 @@
 import { NotFoundError } from "../core/response-handler/error.response.js";
 import { convertObjectIdMongodb, getSelectData } from "../core/utils/object.js";
 import commentModel from "../models/comment.model.js";
+import { findProductByID } from "../models/repositories/product.repository.js";
 
 // https://en.wikipedia.org/wiki/Nested_set_model
 
@@ -115,6 +116,52 @@ class CommentService {
       })
       .sort({ comment_left: 1 });
     return comments;
+  }
+
+  static async deleteComments({ commentId, productId }) {
+    const product = await findProductByID({ product_id: productId });
+    if (!product) throw new NotFoundError("Product not found");
+
+    const comment = await commentModel.findById(commentId);
+    if (!comment) throw new NotFoundError("Comment not found");
+
+    const leftValue = comment.comment_left;
+    const rightValue = comment.comment_right;
+
+    // calc width: tính độ rộng của tất cả comments muốn xoá, cả cha + con
+    const width = rightValue - leftValue + 1;
+
+    // delete: xoá tất cả comment con
+    await commentModel.deleteMany({
+      comment_productId: convertObjectIdMongodb(productId),
+      comment_left: { $gte: leftValue, $lte: rightValue },
+    });
+
+    // update left, right còn lại của các node
+    await commentModel.updateMany(
+      {
+        comment_productId: convertObjectIdMongodb(productId),
+        comment_right: { $gt: rightValue },
+      },
+      {
+        $inc: {
+          comment_right: -width,
+        },
+      }
+    );
+    await commentModel.updateMany(
+      {
+        comment_productId: convertObjectIdMongodb(productId),
+        comment_left: { $gt: rightValue },
+      },
+      {
+        $inc: {
+          comment_left: -width,
+        },
+      }
+    );
+
+    return comment;
   }
 }
 
