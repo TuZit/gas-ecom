@@ -10,6 +10,7 @@ import discountRouter from "./discount/index.js";
 import cartRouter from "./cart/index.js";
 import checkoutRouter from "./checkout/index.js";
 import inventoryRouter from "./inventory/index.js";
+import commentRouter from "./comment/index.js";
 
 const router = express.Router();
 
@@ -21,6 +22,9 @@ router.post("/api/login", asyncHandler(accessController.login));
 
 /*---------- permission ----------*/
 router.use(checkPermission("0000"));
+
+/*---------- checkout routers ----------*/
+router.use("/api/comment", commentRouter);
 
 /*---------- checkout routers ----------*/
 router.use("/api/checkout", checkoutRouter);
