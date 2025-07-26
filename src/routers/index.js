@@ -11,6 +11,7 @@ import cartRouter from "./cart/index.js";
 import checkoutRouter from "./checkout/index.js";
 import inventoryRouter from "./inventory/index.js";
 import commentRouter from "./comment/index.js";
+import notificationRouter from "./notification/index.js";
 
 const router = express.Router();
 
@@ -23,7 +24,7 @@ router.post("/api/login", asyncHandler(accessController.login));
 /*---------- permission ----------*/
 router.use(checkPermission("0000"));
 
-/*---------- checkout routers ----------*/
+/*---------- comment routers ----------*/
 router.use("/api/comment", commentRouter);
 
 /*---------- checkout routers ----------*/
@@ -43,5 +44,8 @@ router.use(productRouter);
 
 /*---------- access routers ----------*/
 router.use(accessRouter);
+
+/*---------- notification routers ----------*/
+router.use("/api/notification", notificationRouter);
 
 export default router;

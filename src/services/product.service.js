@@ -17,6 +17,7 @@ import {
   findProductByID,
   updateProductById,
 } from "../models/repositories/product.repository.js";
+import { pushNotiToSystem } from "./notification.service.js";
 
 class ProductFactoryServices {
   static producRegistry = {};
@@ -108,15 +109,35 @@ class Product {
   }
 
   async createProduct(product_id) {
-    const newProduct = await productModel.create({ ...this, _id: product_id });
-    if (newProduct) {
-      await insertInventory({
-        product_id: newProduct._id,
-        shop_id: newProduct.product_shop,
-        stock: this.product_quantity,
+    try {
+      const newProduct = await productModel.create({
+        ...this,
+        _id: product_id,
       });
+      if (newProduct) {
+        await insertInventory({
+          product_id: newProduct._id,
+          shop_id: newProduct.product_shop,
+          stock: this.product_quantity,
+        });
+
+        // push noti to system collection
+        const noti = await pushNotiToSystem({
+          type: "SHOP-001",
+          options: {
+            product_name: this.product_name,
+            shop_name: this.product_shop,
+            product_type: this.product_type,
+          },
+          receivedId: 11111,
+          senderId: this.product_shop,
+        });
+        console.log("shiba", noti);
+      }
+      return newProduct;
+    } catch (error) {
+      console.error(error);
     }
-    return newProduct;
   }
 
   async updateProduct(product_id, bodyUpdate) {
