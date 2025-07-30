@@ -25,12 +25,13 @@ export const receiveQueue = async () => {
          * Cơ chế xác nhận 1 message
          * Producer thông báo cho consumer về 1 message
          * Nếu Consumer đã xử lý message đó rồi -> gửi lại 1 tin nhắn xác nhận ack=true
-         * Để -> rabbitMQ hiểu đa xử lý thành công message đó rồi
+         * Để -> rabbitMQ hiểu client đã xử lý thành công message đó rồi
          * -> xóa message khỏi queue, lần sau không gửi lại
          */
         noAck: true,
         // true: cơ chế như trên
-        // false: vẫn cho các consumer khác nhận message, vì nó hiểu là chưa xử lý done
+        // false: vẫn cho các consumer khác nhận message,
+        // vì nó hiểu là consumer này chưa xử lý done -> chuyển message qua 1 consumer khác
       }
     );
 
