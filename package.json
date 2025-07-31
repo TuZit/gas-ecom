@@ -16,7 +16,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "test-dlx": "node --watch ./src/test/rabbitmq/producerDLX.js"
   },
   "dependencies": {
     "amqplib": "^0.10.8",
