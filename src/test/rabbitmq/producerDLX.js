@@ -52,3 +52,5 @@ const producerDLX = async ({ msg }) => {
 
 const message = process.argv.slice(2).join(" ") || "Hello";
 producerDLX({ msg: message });
+
+// đảm bảo thứ tự các message, ordering
