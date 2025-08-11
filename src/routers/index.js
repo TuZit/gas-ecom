@@ -12,8 +12,11 @@ import checkoutRouter from "./checkout/index.js";
 import inventoryRouter from "./inventory/index.js";
 import commentRouter from "./comment/index.js";
 import notificationRouter from "./notification/index.js";
+import uploadRouter from "./upload/index.js";
 
 const router = express.Router();
+
+router.use("/api", uploadRouter);
 
 /*---------- check API key ----------*/
 router.use(apiKey);
