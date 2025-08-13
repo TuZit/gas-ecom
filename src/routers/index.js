@@ -13,6 +13,7 @@ import inventoryRouter from "./inventory/index.js";
 import commentRouter from "./comment/index.js";
 import notificationRouter from "./notification/index.js";
 import uploadRouter from "./upload/index.js";
+import profileRouter from "./profile/index.js";
 
 const router = express.Router();
 
@@ -26,6 +27,8 @@ router.post("/api/login", asyncHandler(accessController.login));
 
 /*---------- permission ----------*/
 router.use(checkPermission("0000"));
+
+router.use("/api/profile", profileRouter);
 
 /*---------- comment routers ----------*/
 router.use("/api/comment", commentRouter);

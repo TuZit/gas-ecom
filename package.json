@@ -20,6 +20,7 @@
     "test-dlx": "node --watch ./src/test/rabbitmq/producerDLX.js"
   },
   "dependencies": {
+    "accesscontrol": "^2.2.1",
     "amqplib": "^0.10.8",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.7.0",
