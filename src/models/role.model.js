@@ -52,9 +52,9 @@ const roleSchema = new Schema(
           required: true,
         },
         // được phép actions(chỉnh sửa/xoá) nào
-        actions: { type: String, required: true },
+        actions: { type: [String], required: true },
         // được phép actions tới phần nào
-        attributes: { type: String, default: "**" },
+        attributes: { type: String, default: "*" },
       },
     ],
   },

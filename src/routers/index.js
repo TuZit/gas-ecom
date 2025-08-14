@@ -14,6 +14,7 @@ import commentRouter from "./comment/index.js";
 import notificationRouter from "./notification/index.js";
 import uploadRouter from "./upload/index.js";
 import profileRouter from "./profile/index.js";
+import rbacRouter from "./rbac/index.js";
 
 const router = express.Router();
 
@@ -29,6 +30,7 @@ router.post("/api/login", asyncHandler(accessController.login));
 router.use(checkPermission("0000"));
 
 router.use("/api/profile", profileRouter);
+router.use("/api/rbac", rbacRouter);
 
 /*---------- comment routers ----------*/
 router.use("/api/comment", commentRouter);

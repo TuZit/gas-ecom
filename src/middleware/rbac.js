@@ -1,4 +1,5 @@
 import { AuthFailureError } from "../core/response-handler/error.response.js";
+import { getListRoles } from "../services/rbac.service.js";
 import AccessControl from "./role.middleware.js";
 
 /**
@@ -9,6 +10,12 @@ import AccessControl from "./role.middleware.js";
 const grantAccess = (action, resource) => {
   return async (req, res, next) => {
     try {
+      AccessControl.setGrants(
+        await getListRoles({
+          userId: 9999,
+        })
+      );
+
       const role_name = req.query.role;
       const permission = AccessControl.can(role_name)[action](resource);
       console.log("shiba", permission);
