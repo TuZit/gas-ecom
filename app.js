@@ -2,7 +2,9 @@ import express from "express";
 import morgan from "morgan";
 import helmet from "helmet";
 import compression from "compression";
+import { v4 as uuidv4 } from "uuid";
 
+import WinstonLoggerV2 from "./src/logger/winstonV2.log.js";
 // init db
 import "./src/core/db/init.mongo.js";
 import router from "./src/routers/index.js";
@@ -26,6 +28,18 @@ app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use((req, res, next) => {
+  const requestId = req.headers["x-request-id"] || uuidv4();
+  req.requestId = requestId || uuidv4();
+  WinstonLoggerV2.log(`Info::${req.method}`, [
+    req.path,
+    { requestId: req.requestId },
+    req.method === "POST" ? req.body : req.query,
+  ]);
+
+  next();
+});
+
 // routers
 app.use(router);
 
@@ -39,6 +53,12 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   const statusCode = err.status || 500;
   const message = err.message || "Internal Server Error";
+
+  WinstonLoggerV2.error(`Info::${req.method}`, [
+    req.path,
+    { requestId: req.requestId },
+    message,
+  ]);
   return res.status(statusCode).json({
     status: "error",
     code: statusCode,
