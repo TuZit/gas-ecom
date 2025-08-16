@@ -1,9 +1,16 @@
 import { ReasonPhrases, StatusCodes } from "../constants/httpStatusCode.js";
-
+import WinstonLoggerV2 from "../../logger/winstonV2.log.js";
 class ErrorReponse extends Error {
   constructor(message, status) {
     super(message);
     this.status = status;
+
+    WinstonLoggerV2.error(message, {
+      context: "/path",
+      requestId: "123456",
+      message: this.message,
+      metadata: {},
+    });
   }
 }
 
