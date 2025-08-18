@@ -59,6 +59,15 @@ class NotFoundError extends ErrorReponse {
   }
 }
 
+class RedisError extends ErrorReponse {
+  constructor(
+    message = ReasonPhrases.INTERNAL_SERVER_ERROR,
+    statusCode = StatusCodes.INTERNAL_SERVER_ERROR
+  ) {
+    super(message, statusCode);
+  }
+}
+
 export {
   ErrorReponse,
   ConflictRequestError,
@@ -66,4 +75,5 @@ export {
   AuthFailureError,
   NotFoundError,
   ForbiddenError,
+  RedisError,
 };

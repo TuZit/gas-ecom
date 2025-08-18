@@ -1,8 +1,10 @@
-import redis from "redis";
 import { promisify } from "util";
 import { reservationInventory } from "../models/repositories/inventory.repository.js";
+import { getRedis } from "../core/db/init.redis.js";
 
-const redisClient = redis.createClient({});
+// const redisClient = redis.createClient({});
+const redisClient = getRedis().instanceConnected;
+console.log("redisClient", redisClient);
 
 const pexpire = promisify(redisClient.pExpire).bind(redisClient);
 const setnxAsync = promisify(redisClient.setNX).bind(redisClient);

@@ -5,12 +5,14 @@ import compression from "compression";
 import { v4 as uuidv4 } from "uuid";
 
 import WinstonLoggerV2 from "./src/logger/winstonV2.log.js";
+import router from "./src/routers/index.js";
+
 // init db
 import "./src/core/db/init.mongo.js";
-import router from "./src/routers/index.js";
-// checkOverload();
+import "./src/core/db/init.redis.js"; // This will now automatically initialize the Redis connection
 
 const app = express();
+
 // init middleware
 app.use(morgan("dev")); /* LOG: GET / 200 2.100 ms - 12 */
 
